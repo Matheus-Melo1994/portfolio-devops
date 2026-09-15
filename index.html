@@ -9,34 +9,48 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
+  <!--
+    Saans is a commercial typeface; the Mobbin design pack recommends Inter as
+    the closest widely-available substitute (652 -> 650/700, 456 -> 450/500).
+  -->
   <link
-    href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Syne:wght@400;600;700;800&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;450;500;600;650;700&display=swap"
     rel="stylesheet"
   />
 
   <style>
     :root {
-      --bg: #0b0d10;
-      --bg-secondary: #111418;
-      --card: #14181d;
-      --text: #f4f4f4;
-      --text-secondary: #9da3aa;
-      --border: #252a30;
-      --accent: #72ff8d;
-      --accent-soft: rgba(114, 255, 141, 0.1);
-      --nav-bg: rgba(11, 13, 16, 0.86);
-    }
+      /* ── Mobbin palette: gallery-white monochrome ── */
+      --primary: #141414;
+      --on-primary: #ffffff;
+      --ink: #141414;
+      --ink-soft: #262626;
+      --text-muted: #707070;
+      --text-faint: #adadad;
+      --canvas: #ffffff;
+      --canvas-soft: #f3f3f3;
+      --field: #f0f0f0;
+      --hairline-soft: #f0f0f0;
+      --hairline: #e0e0e0;
+      --accent: #0066ff; /* reserved for commercial/emphasis signals only */
 
-    body.light {
-      --bg: #f4f5f7;
-      --bg-secondary: #ffffff;
-      --card: #ffffff;
-      --text: #101214;
-      --text-secondary: #666d75;
-      --border: #dfe3e7;
-      --accent: #0a9c43;
-      --accent-soft: rgba(10, 156, 67, 0.1);
-      --nav-bg: rgba(244, 245, 247, 0.9);
+      /* ── Radius scale ── */
+      --r-sm: 16px;
+      --r-md: 24px;
+      --r-full: 9999px;
+
+      /* ── Spacing scale ── */
+      --s-xxs: 4px;
+      --s-xs: 8px;
+      --s-sm: 12px;
+      --s-md: 16px;
+      --s-lg: 24px;
+      --s-xl: 32px;
+      --s-xxl: 48px;
+      --s-section: 80px;
+      --s-section-lg: 120px;
+
+      --font: "Inter", -apple-system, "Helvetica Neue", Arial, sans-serif;
     }
 
     * {
@@ -50,11 +64,14 @@
     }
 
     body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: "DM Mono", monospace;
-      line-height: 1.7;
-      transition: background 0.3s ease, color 0.3s ease;
+      background: var(--canvas);
+      color: var(--ink);
+      font-family: var(--font);
+      /* body: 16px / weight 456 -> 450 / line-height 1.38 */
+      font-size: 16px;
+      font-weight: 450;
+      line-height: 1.38;
+      -webkit-font-smoothing: antialiased;
     }
 
     a {
@@ -62,351 +79,457 @@
       text-decoration: none;
     }
 
-    nav {
-      width: 100%;
-      min-height: 72px;
-      padding: 0 8%;
+    /* ────────────────────────────────────────────────
+       NAV — floating, horizontally-centered stadium pill
+    ──────────────────────────────────────────────────── */
+    .nav-wrap {
+      position: fixed;
+      top: var(--s-lg);
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      display: flex;
+      justify-content: center;
+      pointer-events: none;
+    }
+
+    .nav-pill {
+      pointer-events: auto;
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      position: fixed;
-      top: 0;
-      z-index: 1000;
-      background: var(--nav-bg);
-      border-bottom: 1px solid var(--border);
-      backdrop-filter: blur(12px);
+      gap: var(--s-xl);
+      background: var(--canvas-soft);
+      border-radius: var(--r-full);
+      padding: 10px 10px 10px var(--s-lg);
+      max-width: calc(100% - 2 * var(--s-lg));
     }
 
     .nav-logo {
-      font-family: "Syne", sans-serif;
-      font-weight: 800;
-      letter-spacing: 1px;
-      color: var(--accent);
+      font-weight: 650;
+      font-size: 16px;
+      color: var(--ink);
+      white-space: nowrap;
     }
 
     .nav-links {
       display: flex;
       list-style: none;
-      gap: 28px;
-      font-size: 13px;
+      gap: var(--s-lg);
     }
 
     .nav-links a {
-      color: var(--text-secondary);
-      transition: 0.2s ease;
+      color: var(--ink);
+      font-weight: 600;
+      font-size: 16px;
+      transition: color 0.15s ease;
     }
 
     .nav-links a:hover {
-      color: var(--accent);
+      color: var(--text-muted);
     }
 
-    .theme-toggle {
-      border: 1px solid var(--border);
-      background: var(--card);
-      color: var(--text);
-      border-radius: 8px;
-      padding: 8px 11px;
-      cursor: pointer;
+    /* ────────────────────────────────────────────────
+       BUTTONS — every interactive element is a pill
+    ──────────────────────────────────────────────────── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 44px;
+      padding: 0 var(--s-md);
+      border-radius: var(--r-full);
+      font-weight: 600;
       font-size: 16px;
+      line-height: 1;
+      white-space: nowrap;
+      transition: opacity 0.15s ease, background 0.15s ease;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: var(--on-primary);
+      border: 1px solid var(--primary);
+    }
+
+    .btn-primary:hover {
+      opacity: 0.85;
+    }
+
+    .btn-outline {
+      background: var(--canvas);
+      color: var(--ink);
+      border: 1px solid var(--hairline);
+    }
+
+    .btn-outline:hover {
+      background: var(--canvas-soft);
+    }
+
+    .btn-soft {
+      background: var(--canvas-soft);
+      color: var(--ink);
+      border: 1px solid transparent;
+    }
+
+    .btn-soft:hover {
+      background: var(--field);
+    }
+
+    /* Compact nav CTA */
+    .nav-pill .btn {
+      height: 40px;
+    }
+
+    /* ────────────────────────────────────────────────
+       LAYOUT — centered column, whitespace as separator
+    ──────────────────────────────────────────────────── */
+    .container {
+      width: min(1100px, 88%);
+      margin: 0 auto;
     }
 
     section {
-      width: min(1100px, 84%);
-      margin: 0 auto;
-      padding: 110px 0;
+      padding: var(--s-section) 0;
     }
 
+    /* ── Section eyebrow + heading ── */
+    .section-eyebrow {
+      color: var(--text-muted);
+      font-weight: 600;
+      font-size: 16px;
+      margin-bottom: var(--s-sm);
+    }
+
+    .section-title {
+      /* heading-2: 44px / 652 / 1.13 */
+      font-size: clamp(32px, 5vw, 44px);
+      font-weight: 650;
+      line-height: 1.13;
+      letter-spacing: 0;
+      margin-bottom: var(--s-xxl);
+    }
+
+    /* ────────────────────────────────────────────────
+       HERO
+    ──────────────────────────────────────────────────── */
     #hero {
-      min-height: 100vh;
+      min-height: 92vh;
       display: flex;
       flex-direction: column;
       justify-content: center;
-      padding-top: 130px;
+      padding-top: 160px;
+      padding-bottom: var(--s-section);
     }
 
-    .hero-tag {
-      color: var(--accent);
-      font-size: 14px;
-      margin-bottom: 16px;
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--s-xs);
+      align-self: flex-start;
+      background: var(--canvas-soft);
+      color: var(--ink);
+      font-weight: 600;
+      font-size: 12px;
+      line-height: 1.33;
+      padding: 8px 14px;
+      border-radius: var(--r-full);
+      margin-bottom: var(--s-lg);
     }
 
     .hero-name {
-      font-family: "Syne", sans-serif;
-      font-size: clamp(54px, 9vw, 110px);
-      line-height: 0.95;
-      letter-spacing: -5px;
-      font-weight: 800;
-    }
-
-    .hero-name span {
-      color: var(--accent);
+      /* display: 80px / 652 / 1.0 */
+      font-size: clamp(52px, 10vw, 88px);
+      font-weight: 650;
+      line-height: 1;
+      letter-spacing: 0;
     }
 
     .hero-role {
-      margin-top: 25px;
-      font-family: "Syne", sans-serif;
-      font-size: clamp(22px, 4vw, 38px);
-      font-weight: 600;
+      /* heading-3: 32px / 652 / 1.13 */
+      margin-top: var(--s-lg);
+      font-size: clamp(24px, 4vw, 32px);
+      font-weight: 650;
+      line-height: 1.13;
+      color: var(--ink-soft);
     }
 
     .hero-desc {
-      max-width: 760px;
-      color: var(--text-secondary);
-      margin-top: 24px;
-      font-size: 15px;
+      /* body-lg: 20px / 300 / 1.38 — the light counterpoint */
+      max-width: 720px;
+      margin-top: var(--s-lg);
+      font-size: 20px;
+      font-weight: 300;
+      line-height: 1.38;
+      color: var(--text-muted);
     }
 
     .hero-cta {
       display: flex;
-      gap: 14px;
-      margin-top: 34px;
+      gap: var(--s-sm);
+      margin-top: var(--s-xl);
       flex-wrap: wrap;
     }
 
-    .btn {
-      padding: 13px 21px;
-      border-radius: 6px;
-      font-size: 13px;
-      transition: 0.2s ease;
-    }
-
-    .btn-primary {
-      background: var(--accent);
-      color: #081009;
-      border: 1px solid var(--accent);
-    }
-
-    .btn-primary:hover {
-      transform: translateY(-2px);
-      opacity: 0.9;
-    }
-
-    .btn-outline {
-      border: 1px solid var(--border);
-    }
-
-    .btn-outline:hover {
-      border-color: var(--accent);
-      color: var(--accent);
-    }
-
-    .divider {
-      width: min(1100px, 84%);
-      margin: auto;
-      height: 1px;
-      background: var(--border);
-    }
-
-    .section-label {
-      color: var(--accent);
-      font-size: 13px;
-      margin-bottom: 8px;
-    }
-
-    .section-title {
-      font-family: "Syne", sans-serif;
-      font-size: clamp(35px, 5vw, 55px);
-      margin-bottom: 50px;
-      letter-spacing: -2px;
-    }
-
+    /* ────────────────────────────────────────────────
+       SKILLS — 3-up card grid, hairline-outlined
+    ──────────────────────────────────────────────────── */
     .skills-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 18px;
+      gap: var(--s-md);
     }
 
-    .skill-card,
-    .project-card {
-      border: 1px solid var(--border);
-      background: var(--card);
-      border-radius: 10px;
-      padding: 25px;
-      transition: 0.25s ease;
-    }
-
-    .skill-card:hover,
-    .project-card:hover {
-      transform: translateY(-4px);
-      border-color: var(--accent);
+    .skill-card {
+      background: var(--canvas);
+      border: 1px solid var(--hairline-soft);
+      border-radius: var(--r-md);
+      padding: var(--s-lg);
     }
 
     .skill-card-title {
-      font-family: "Syne", sans-serif;
-      font-weight: 700;
-      margin-bottom: 18px;
+      /* heading-4: 24px / 652 / 1.25 */
+      font-size: 20px;
+      font-weight: 650;
+      line-height: 1.25;
+      margin-bottom: var(--s-md);
       display: flex;
       align-items: center;
       gap: 10px;
     }
 
     .skill-dot {
-      width: 8px;
-      height: 8px;
-      background: var(--accent);
-      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      border-radius: 30%; /* squircle motif */
+      background: var(--ink);
+      flex-shrink: 0;
     }
 
     .skill-list {
       list-style: none;
       display: flex;
       flex-wrap: wrap;
-      gap: 8px;
+      gap: var(--s-xs);
     }
 
-    .skill-tag,
-    .project-tag {
-      font-size: 11px;
-      padding: 6px 10px;
-      border: 1px solid var(--border);
-      border-radius: 5px;
-      color: var(--text-secondary);
-      background: var(--bg-secondary);
+    .chip {
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1.33;
+      padding: 6px 12px;
+      border-radius: var(--r-full);
+      background: var(--canvas-soft);
+      color: var(--ink);
     }
 
+    /* ────────────────────────────────────────────────
+       PROJECTS — 24px cards, hairline outline
+    ──────────────────────────────────────────────────── */
     .projects-grid {
       display: grid;
-      gap: 20px;
+      gap: var(--s-md);
+    }
+
+    .project-card {
+      background: var(--canvas);
+      border: 1px solid var(--hairline-soft);
+      border-radius: var(--r-md);
+      padding: var(--s-lg);
+      transition: background 0.15s ease;
+    }
+
+    .project-card:hover {
+      background: var(--canvas-soft);
     }
 
     .project-header {
       display: flex;
       justify-content: space-between;
-      gap: 20px;
-      align-items: center;
-      margin-bottom: 16px;
+      gap: var(--s-lg);
+      align-items: baseline;
+      margin-bottom: var(--s-sm);
     }
 
     .project-name {
-      font-family: "Syne", sans-serif;
-      font-size: 21px;
-      font-weight: 700;
+      /* heading-4: 24px / 652 */
+      font-size: 24px;
+      font-weight: 650;
+      line-height: 1.25;
     }
 
     .project-link {
-      color: var(--accent);
-      font-size: 12px;
+      color: var(--ink);
+      font-weight: 600;
+      font-size: 14px;
       white-space: nowrap;
+      background: var(--canvas-soft);
+      padding: 8px 14px;
+      border-radius: var(--r-full);
+      transition: background 0.15s ease;
+    }
+
+    .project-link:hover {
+      background: var(--field);
     }
 
     .project-desc {
-      color: var(--text-secondary);
+      color: var(--text-muted);
       max-width: 850px;
-      font-size: 14px;
-      margin-bottom: 20px;
+      font-size: 16px;
+      font-weight: 450;
+      margin-bottom: var(--s-md);
     }
 
     .project-tags {
       display: flex;
       flex-wrap: wrap;
-      gap: 8px;
+      gap: var(--s-xs);
     }
 
+    /* ────────────────────────────────────────────────
+       EDUCATION — feature rows on soft canvas
+    ──────────────────────────────────────────────────── */
     .edu-list {
-      border-top: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: var(--s-sm);
     }
 
     .edu-item {
       display: grid;
-      grid-template-columns: 190px 1fr;
-      gap: 30px;
-      padding: 28px 0;
-      border-bottom: 1px solid var(--border);
+      grid-template-columns: 220px 1fr;
+      gap: var(--s-lg);
+      align-items: center;
+      background: var(--canvas-soft);
+      border-radius: var(--r-sm);
+      padding: var(--s-lg);
     }
 
     .edu-year {
-      color: var(--accent);
-      font-size: 13px;
-    }
-
-    .edu-title {
-      font-family: "Syne", sans-serif;
-      font-weight: 700;
-      font-size: 20px;
-    }
-
-    .edu-institution {
-      color: var(--text-secondary);
-      margin-top: 5px;
+      color: var(--text-muted);
+      font-weight: 600;
       font-size: 14px;
     }
 
+    .edu-title {
+      font-size: 20px;
+      font-weight: 650;
+      line-height: 1.3;
+    }
+
+    .edu-institution {
+      color: var(--text-muted);
+      margin-top: var(--s-xxs);
+      font-size: 16px;
+    }
+
+    /* ────────────────────────────────────────────────
+       CONTACT
+    ──────────────────────────────────────────────────── */
     .contact-desc {
-      color: var(--text-secondary);
+      color: var(--text-muted);
       max-width: 600px;
-      margin-bottom: 30px;
+      font-size: 20px;
+      font-weight: 300;
+      margin-bottom: var(--s-xl);
     }
 
     .contact-links {
       display: flex;
-      flex-direction: column;
-      gap: 12px;
-      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: var(--s-sm);
     }
 
     .contact-link {
-      padding: 12px 15px;
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      transition: 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: var(--s-xs);
+      background: var(--canvas-soft);
+      color: var(--ink);
+      font-weight: 600;
+      font-size: 16px;
+      padding: 12px var(--s-md);
+      border-radius: var(--r-full);
+      transition: background 0.15s ease;
     }
 
     .contact-link:hover {
-      color: var(--accent);
-      border-color: var(--accent);
+      background: var(--field);
     }
 
-    .contact-icon {
-      margin-right: 8px;
-      color: var(--accent);
+    .contact-link .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: var(--r-full);
+      background: var(--ink);
     }
 
+    /* ────────────────────────────────────────────────
+       FOOTER — inverse ink band, rounded top corners
+    ──────────────────────────────────────────────────── */
     footer {
-      width: min(1100px, 84%);
-      margin: auto;
-      border-top: 1px solid var(--border);
-      padding: 35px 0;
-      color: var(--text-secondary);
-      text-align: center;
+      background: var(--ink);
+      color: var(--on-primary);
+      border-radius: var(--r-md) var(--r-md) 0 0;
+      margin-top: var(--s-section);
+    }
+
+    .footer-inner {
+      width: min(1100px, 88%);
+      margin: 0 auto;
+      padding: var(--s-xxl) 0;
+      display: flex;
+      flex-direction: column;
+      gap: var(--s-sm);
+    }
+
+    .footer-wordmark {
+      font-size: clamp(32px, 6vw, 56px);
+      font-weight: 650;
+      line-height: 1;
+    }
+
+    .footer-tagline {
+      color: var(--text-faint);
+      font-size: 16px;
+      max-width: 520px;
+    }
+
+    .footer-meta {
+      color: var(--text-faint);
       font-size: 12px;
+      margin-top: var(--s-md);
     }
 
-    footer span {
-      color: var(--accent);
-    }
-
-    @media (max-width: 850px) {
-      nav {
-        padding: 0 5%;
-      }
-
+    /* ────────────────────────────────────────────────
+       RESPONSIVE — grids collapse column-by-column
+    ──────────────────────────────────────────────────── */
+    @media (max-width: 840px) {
       .nav-links {
         display: none;
       }
 
-      section,
-      .divider,
-      footer {
-        width: 90%;
+      .skills-grid {
+        grid-template-columns: 1fr 1fr;
       }
+    }
 
+    @media (max-width: 640px) {
       .skills-grid {
         grid-template-columns: 1fr;
       }
 
       .edu-item {
         grid-template-columns: 1fr;
-        gap: 8px;
+        gap: var(--s-xs);
+        align-items: start;
       }
 
       .project-header {
-        align-items: flex-start;
         flex-direction: column;
-        gap: 5px;
-      }
-
-      .hero-name {
-        letter-spacing: -3px;
+        align-items: flex-start;
+        gap: var(--s-sm);
       }
     }
   </style>
@@ -414,463 +537,327 @@
 
 <body>
 
-  <!-- NAV -->
-  <nav>
-    <a href="#hero" class="nav-logo">MATHEUS_MELO</a>
+  <!-- NAV — floating pill -->
+  <div class="nav-wrap">
+    <nav class="nav-pill">
+      <a href="#hero" class="nav-logo">
+        Matheus Melo
+      </a>
 
-    <ul class="nav-links">
-      <li><a href="#skills">Skills</a></li>
-      <li><a href="#projects">Proyectos</a></li>
-      <li><a href="#education">Educación</a></li>
-      <li><a href="#contact">Contacto</a></li>
-    </ul>
+      <ul class="nav-links">
+        <li><a href="#skills">Skills</a></li>
+        <li><a href="#projects">Proyectos</a></li>
+        <li><a href="#education">Educación</a></li>
+      </ul>
 
-    <button
-      id="theme-toggle"
-      class="theme-toggle"
-      aria-label="Cambiar tema"
-    >
-      ☀
-    </button>
-  </nav>
+      <a href="#contact" class="btn btn-primary">Contacto</a>
+    </nav>
+  </div>
 
 
   <!-- HERO -->
   <section id="hero">
+    <div class="container">
 
-    <p class="hero-tag">👋 Hola, soy</p>
+      <h1 class="hero-name">Matheus Melo.</h1>
 
-    <h1 class="hero-name">
-      Matheus <span>Melo</span>
-    </h1>
+      <p class="hero-role">Solutions Architect &amp; DevOps</p>
 
-    <p class="hero-role">
-      Solutions Architect | DevOps
-    </p>
+      <p class="hero-desc">
+        Solutions Architect con experiencia trabajando con integraciones técnicas,
+        APIs y clientes internacionales. Actualmente estoy profundizando mis
+        conocimientos en DevOps, Cloud, Linux, automatización, CI/CD e
+        infraestructura a través del Certificado DevOps de ORT ATI.
+      </p>
 
-    <p class="hero-desc">
-      Solutions Architect con experiencia trabajando con integraciones técnicas,
-      APIs y clientes internacionales. Actualmente estoy profundizando mis
-      conocimientos en DevOps, Cloud, Linux, automatización, CI/CD e
-      infraestructura a través del Certificado DevOps de ORT ATI.
-    </p>
+      <div class="hero-cta">
+        <a href="#projects" class="btn btn-primary">Ver proyectos</a>
+        <a href="#contact" class="btn btn-outline">Contacto</a>
+      </div>
 
-    <div class="hero-cta">
-      <a href="#projects" class="btn btn-primary">
-        Ver proyectos
-      </a>
-
-      <a href="#contact" class="btn btn-outline">
-        Contacto
-      </a>
     </div>
-
   </section>
-
-
-  <div class="divider"></div>
 
 
   <!-- SKILLS -->
   <section id="skills">
+    <div class="container">
 
-    <p class="section-label">// habilidades</p>
+      <p class="section-eyebrow">Habilidades</p>
+      <h2 class="section-title">Stack técnico.</h2>
 
-    <h2 class="section-title">
-      Stack técnico
-    </h2>
+      <div class="skills-grid">
 
-    <div class="skills-grid">
-
-      <!-- VERSION CONTROL -->
-      <div class="skill-card">
-
-        <div class="skill-card-title">
-          <span class="skill-dot"></span>
-          Control de versiones
+        <!-- VERSION CONTROL -->
+        <div class="skill-card">
+          <div class="skill-card-title">
+            <span class="skill-dot"></span>
+            Control de versiones
+          </div>
+          <ul class="skill-list">
+            <li class="chip">Git</li>
+            <li class="chip">GitHub</li>
+            <li class="chip">Git Flow</li>
+          </ul>
         </div>
 
-        <ul class="skill-list">
-          <li class="skill-tag">Git</li>
-          <li class="skill-tag">GitHub</li>
-          <li class="skill-tag">Git Flow</li>
-        </ul>
-
-      </div>
-
-
-      <!-- LINUX -->
-      <div class="skill-card">
-
-        <div class="skill-card-title">
-          <span class="skill-dot"></span>
-          Linux & Scripting
+        <!-- LINUX -->
+        <div class="skill-card">
+          <div class="skill-card-title">
+            <span class="skill-dot"></span>
+            Linux &amp; Scripting
+          </div>
+          <ul class="skill-list">
+            <li class="chip">Linux</li>
+            <li class="chip">Bash</li>
+            <li class="chip">SSH</li>
+          </ul>
         </div>
 
-        <ul class="skill-list">
-          <li class="skill-tag">Linux</li>
-          <li class="skill-tag">Bash</li>
-          <li class="skill-tag">SSH</li>
-        </ul>
-
-      </div>
-
-
-      <!-- CLOUD -->
-      <div class="skill-card">
-
-        <div class="skill-card-title">
-          <span class="skill-dot"></span>
-          Cloud
+        <!-- CLOUD -->
+        <div class="skill-card">
+          <div class="skill-card-title">
+            <span class="skill-dot"></span>
+            Cloud
+          </div>
+          <ul class="skill-list">
+            <li class="chip">AWS</li>
+            <li class="chip">EC2</li>
+            <li class="chip">S3</li>
+            <li class="chip">IAM</li>
+          </ul>
         </div>
 
-        <ul class="skill-list">
-          <li class="skill-tag">AWS</li>
-          <li class="skill-tag">EC2</li>
-          <li class="skill-tag">S3</li>
-          <li class="skill-tag">IAM</li>
-        </ul>
-
-      </div>
-
-
-      <!-- DEVOPS -->
-      <div class="skill-card">
-
-        <div class="skill-card-title">
-          <span class="skill-dot"></span>
-          DevOps
+        <!-- DEVOPS -->
+        <div class="skill-card">
+          <div class="skill-card-title">
+            <span class="skill-dot"></span>
+            DevOps
+          </div>
+          <ul class="skill-list">
+            <li class="chip">CI/CD</li>
+            <li class="chip">Docker</li>
+            <li class="chip">GitHub Actions</li>
+          </ul>
         </div>
 
-        <ul class="skill-list">
-          <li class="skill-tag">CI/CD</li>
-          <li class="skill-tag">Docker</li>
-          <li class="skill-tag">GitHub Actions</li>
-        </ul>
-
-      </div>
-
-
-      <!-- DEVELOPMENT -->
-      <div class="skill-card">
-
-        <div class="skill-card-title">
-          <span class="skill-dot"></span>
-          Desarrollo
+        <!-- DEVELOPMENT -->
+        <div class="skill-card">
+          <div class="skill-card-title">
+            <span class="skill-dot"></span>
+            Desarrollo
+          </div>
+          <ul class="skill-list">
+            <li class="chip">HTML / CSS</li>
+            <li class="chip">JavaScript</li>
+            <li class="chip">REST APIs</li>
+          </ul>
         </div>
 
-        <ul class="skill-list">
-          <li class="skill-tag">HTML / CSS</li>
-          <li class="skill-tag">JavaScript</li>
-          <li class="skill-tag">REST APIs</li>
-        </ul>
-
-      </div>
-
-
-      <!-- LEARNING -->
-      <div class="skill-card">
-
-        <div class="skill-card-title">
-          <span class="skill-dot"></span>
-          En aprendizaje
+        <!-- LEARNING -->
+        <div class="skill-card">
+          <div class="skill-card-title">
+            <span class="skill-dot"></span>
+            En aprendizaje
+          </div>
+          <ul class="skill-list">
+            <li class="chip">Terraform</li>
+            <li class="chip">Kubernetes</li>
+            <li class="chip">Observabilidad</li>
+          </ul>
         </div>
-
-        <ul class="skill-list">
-          <li class="skill-tag">Terraform</li>
-          <li class="skill-tag">Kubernetes</li>
-          <li class="skill-tag">Observabilidad</li>
-        </ul>
 
       </div>
 
     </div>
-
   </section>
-
-
-  <div class="divider"></div>
 
 
   <!-- PROJECTS -->
   <section id="projects">
+    <div class="container">
 
-    <p class="section-label">// proyectos</p>
+      <p class="section-eyebrow">Proyectos</p>
+      <h2 class="section-title">Lo que estoy construyendo.</h2>
 
-    <h2 class="section-title">
-      Lo que estoy construyendo
-    </h2>
+      <div class="projects-grid">
 
-    <div class="projects-grid">
-
-
-      <!-- PROJECT 1 -->
-      <div class="project-card">
-
-        <div class="project-header">
-
-          <span class="project-name">
-            Git & GitHub Labs
-          </span>
-
-          <a
-            href="https://github.com/Matheus-Melo1994/practicoGit"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="project-link"
-          >
-            ↗ ver repo
-          </a>
-
+        <!-- PROJECT 1 -->
+        <div class="project-card">
+          <div class="project-header">
+            <span class="project-name">Git &amp; GitHub Labs</span>
+            <a
+              href="https://github.com/Matheus-Melo1994/practicoGit"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="project-link"
+            >
+              Ver repo ↗
+            </a>
+          </div>
+          <p class="project-desc">
+            Repositorio práctico utilizado para trabajar conceptos fundamentales
+            y avanzados de Git, incluyendo branching, merge, stash, tags,
+            revert, reset y resolución de conflictos.
+          </p>
+          <div class="project-tags">
+            <span class="chip">Git</span>
+            <span class="chip">GitHub</span>
+            <span class="chip">Version Control</span>
+          </div>
         </div>
 
-        <p class="project-desc">
-          Repositorio práctico utilizado para trabajar conceptos fundamentales
-          y avanzados de Git, incluyendo branching, merge, stash, tags,
-          revert, reset y resolución de conflictos.
-        </p>
-
-        <div class="project-tags">
-          <span class="project-tag">Git</span>
-          <span class="project-tag">GitHub</span>
-          <span class="project-tag">Version Control</span>
+        <!-- PROJECT 2 -->
+        <div class="project-card">
+          <div class="project-header">
+            <span class="project-name">Portfolio DevOps</span>
+            <a
+              href="https://github.com/Matheus-Melo1994/portfolio-devops"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="project-link"
+            >
+              Ver repo ↗
+            </a>
+          </div>
+          <p class="project-desc">
+            Portfolio personal creado para documentar mi evolución en DevOps,
+            proyectos, laboratorios y tecnologías aprendidas durante mi formación.
+            El objetivo es transformar cada nuevo conocimiento en una
+            implementación práctica y documentada.
+          </p>
+          <div class="project-tags">
+            <span class="chip">GitHub</span>
+            <span class="chip">GitHub Pages</span>
+            <span class="chip">HTML / CSS</span>
+            <span class="chip">DevOps</span>
+          </div>
         </div>
 
-      </div>
-
-
-      <!-- PROJECT 2 -->
-      <div class="project-card">
-
-        <div class="project-header">
-
-          <span class="project-name">
-            Portfolio DevOps
-          </span>
-
-          <a
-            href="https://github.com/Matheus-Melo1994/portfolio-devops"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="project-link"
-          >
-            ↗ ver repo
-          </a>
-
-        </div>
-
-        <p class="project-desc">
-          Portfolio personal creado para documentar mi evolución en DevOps,
-          proyectos, laboratorios y tecnologías aprendidas durante mi formación.
-          El objetivo es transformar cada nuevo conocimiento en una
-          implementación práctica y documentada.
-        </p>
-
-        <div class="project-tags">
-          <span class="project-tag">GitHub</span>
-          <span class="project-tag">GitHub Pages</span>
-          <span class="project-tag">HTML / CSS</span>
-          <span class="project-tag">DevOps</span>
-        </div>
-
-      </div>
-
-
-      <!-- PROJECT 3 -->
-      <div class="project-card">
-
-        <div class="project-header">
-
-          <span class="project-name">
-            Linux DevOps Lab
-          </span>
-
-          <a
-            href="https://github.com/Matheus-Melo1994/portfolio-devops"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="project-link"
-          >
-            ↗ ver repo
-          </a>
-
-        </div>
-
-        <p class="project-desc">
-          Configuración de un ambiente Linux virtualizado utilizando
-          VirtualBox, networking con NAT, port forwarding y acceso remoto
-          mediante SSH desde macOS. El laboratorio funciona como base para
-          futuros ejercicios de administración Linux y DevOps.
-        </p>
-
-        <div class="project-tags">
-          <span class="project-tag">Linux</span>
-          <span class="project-tag">CentOS</span>
-          <span class="project-tag">VirtualBox</span>
-          <span class="project-tag">SSH</span>
-          <span class="project-tag">Networking</span>
+        <!-- PROJECT 3 -->
+        <div class="project-card">
+          <div class="project-header">
+            <span class="project-name">Linux DevOps Lab</span>
+            <a
+              href="https://github.com/Matheus-Melo1994/portfolio-devops"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="project-link"
+            >
+              Ver repo ↗
+            </a>
+          </div>
+          <p class="project-desc">
+            Configuración de un ambiente Linux virtualizado utilizando
+            VirtualBox, networking con NAT, port forwarding y acceso remoto
+            mediante SSH desde macOS. El laboratorio funciona como base para
+            futuros ejercicios de administración Linux y DevOps.
+          </p>
+          <div class="project-tags">
+            <span class="chip">Linux</span>
+            <span class="chip">CentOS</span>
+            <span class="chip">VirtualBox</span>
+            <span class="chip">SSH</span>
+            <span class="chip">Networking</span>
+          </div>
         </div>
 
       </div>
 
     </div>
-
   </section>
-
-
-  <div class="divider"></div>
 
 
   <!-- EDUCATION -->
   <section id="education">
+    <div class="container">
 
-    <p class="section-label">// educación</p>
+      <p class="section-eyebrow">Educación</p>
+      <h2 class="section-title">Formación.</h2>
 
-    <h2 class="section-title">
-      Formación
-    </h2>
+      <div class="edu-list">
 
-    <div class="edu-list">
-
-      <div class="edu-item">
-
-        <span class="edu-year">
-          2026 — Actualidad
-        </span>
-
-        <div>
-          <p class="edu-title">
-            Certificado DevOps
-          </p>
-
-          <p class="edu-institution">
-            ORT ATI — Escuela de Tecnología
-          </p>
+        <div class="edu-item">
+          <span class="edu-year">2026 · Actualidad</span>
+          <div>
+            <p class="edu-title">Certificado DevOps</p>
+            <p class="edu-institution">ORT ATI, Escuela de Tecnología</p>
+          </div>
         </div>
 
-      </div>
-
-      <div class="edu-item">
-
-        <span class="edu-year">
-          Desarrollo continuo
-        </span>
-
-        <div>
-          <p class="edu-title">
-            Cloud & DevOps
-          </p>
-
-          <p class="edu-institution">
-            Formación práctica en AWS, Linux, Git, CI/CD,
-            contenedores y automatización.
-          </p>
+        <div class="edu-item">
+          <span class="edu-year">Desarrollo continuo</span>
+          <div>
+            <p class="edu-title">Cloud &amp; DevOps</p>
+            <p class="edu-institution">
+              Formación práctica en AWS, Linux, Git, CI/CD,
+              contenedores y automatización.
+            </p>
+          </div>
         </div>
 
       </div>
 
     </div>
-
   </section>
-
-
-  <div class="divider"></div>
 
 
   <!-- CONTACT -->
   <section id="contact">
+    <div class="container">
 
-    <p class="section-label">// contacto</p>
+      <p class="section-eyebrow">Contacto</p>
+      <h2 class="section-title">Conectemos.</h2>
 
-    <h2 class="section-title">
-      Conectemos
-    </h2>
+      <p class="contact-desc">
+        Siempre estoy interesado en conversar sobre tecnología,
+        arquitectura de soluciones, Cloud, DevOps y nuevos proyectos.
+      </p>
 
-    <p class="contact-desc">
-      Siempre estoy interesado en conversar sobre tecnología,
-      arquitectura de soluciones, Cloud, DevOps y nuevos proyectos.
-    </p>
+      <div class="contact-links">
+        <a href="mailto:matheus.caique21@gmail.com" class="contact-link">
+          <span class="dot"></span>
+          Email
+        </a>
 
-    <div class="contact-links">
+        <a
+          href="https://github.com/Matheus-Melo1994"
+          class="contact-link"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <span class="dot"></span>
+          github.com/Matheus-Melo1994
+        </a>
 
-      <!-- CAMBIA TU EMAIL -->
-      <a
-        href="matheus.caique21@gmail.com"
-        class="contact-link"
-      >
-        <span class="contact-icon">✉</span>
-        Email
-      </a>
-
-
-      <a
-        href="https://github.com/Matheus-Melo1994"
-        class="contact-link"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        <span class="contact-icon">⌥</span>
-        github.com/Matheus-Melo1994
-      </a>
-
-      <a
-        href="https://www.linkedin.com/in/matheus-melo-a00070130/"
-        class="contact-link"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        <span class="contact-icon">◈</span>
-        LinkedIn
-      </a>
+        <a
+          href="https://www.linkedin.com/in/matheus-melo-a00070130/"
+          class="contact-link"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <span class="dot"></span>
+          LinkedIn
+        </a>
+      </div>
 
     </div>
-
   </section>
 
 
-  <!-- FOOTER -->
+  <!-- FOOTER — inverse ink band -->
   <footer>
-
-    Hecho con Git, GitHub y mucho
-    <span>☕</span>
-
-    —
-
-    <span>MATHEUS_MELO</span>
-
+    <div class="footer-inner">
+      <span class="footer-wordmark">Matheus Melo.</span>
+      <p class="footer-tagline">
+        Solutions Architect en camino a DevOps. Transformando cada nuevo
+        conocimiento en una implementación práctica y documentada.
+      </p>
+      <p class="footer-meta">
+        Hecho con Git, GitHub y mucho ☕ · © 2026 Matheus Melo
+      </p>
+    </div>
   </footer>
-
-
-  <!-- THEME JS -->
-  <script>
-
-    const themeToggle = document.getElementById("theme-toggle");
-
-    const savedTheme = localStorage.getItem("theme");
-
-    if (savedTheme === "light") {
-      document.body.classList.add("light");
-      themeToggle.textContent = "☾";
-    }
-
-    themeToggle.addEventListener("click", () => {
-
-      document.body.classList.toggle("light");
-
-      const isLight =
-        document.body.classList.contains("light");
-
-      themeToggle.textContent =
-        isLight ? "☾" : "☀";
-
-      localStorage.setItem(
-        "theme",
-        isLight ? "light" : "dark"
-      );
-
-    });
-
-  </script>
 
 </body>
 </html>
